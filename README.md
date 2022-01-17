@@ -49,6 +49,7 @@ Jolly good - that took 4 guesses
 
 ## Potential Improvements
 
+* Where several words have the same or similar usefulness score, the guesser should return the most frequently-used one.
 * The word list could be reduced to Wordle's valid word list, which is included in the page source, to save on time guessing invalid words.
 * We could probably exclude words that only occur once or twice in 100 million words, since they're unlikely to be chosen as answers. BUT they might be good for discriminating.
 * The solver always suggests words that match the information given (ie "hard mode"). Words that don't 100% match may be better for narrowing down large solution spaces, but exactly what the best discriminator is seems expensive to calculate.
