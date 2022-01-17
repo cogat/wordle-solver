@@ -18,7 +18,7 @@ There are initially about 30,500 candidate words (not all of these are in the Wo
 
 Run:
 ```{bash}
-python solver.py
+python3 solver.py
 ```
 
 It will suggest the best word (initially, OATER) and ask for the result. Type 5 characters to indicate the result, such as `.y..Y` then press `ENTER`:
@@ -28,6 +28,24 @@ It will suggest the best word (initially, OATER) and ask for the result. Type 5 
 * 🟩 = `Y`
 
 If the suggested word isn't in the Wordle word list, type `n` and it will choose the next-best word. Once you type `YYYYY` the guesses will stop.
+
+```
+Suggest 'OATER'
+Outcome? yY..Y
+Filtered down to 31 words, [abcdfghijklmnpqrsuvwxyz][a][abcdfghijklmnopqrsuvwxyz][abcdfghijklmnopqrsuvwxyz][r]
+Suggest 'MAJOR'
+Outcome? .Y.YY
+Filtered down to 23 words, [abcdfghiklnpqrsuvwxyz][a][abcdfghiklnopqrsuvwxyz][o][r]
+Suggest 'LABOR'
+Outcome? .Y.YY
+Filtered down to 16 words, [acdfghiknpqrsuvwxyz][a][acdfghiknopqrsuvwxyz][o][r]
+Suggest 'HAZOR'
+Outcome? n
+Filtered down to 15 words, [acdfghiknpqrsuvwxyz][a][acdfghiknopqrsuvwxyz][o][r]
+Suggest 'FAVOR'
+Outcome? YYYYY
+Jolly good - that took 4 guesses
+```
 
 ## Potential Improvements
 
