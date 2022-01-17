@@ -1,6 +1,6 @@
 # Wordle Solver
 
-This solver uses a list of 5-letter words plus usage frequency (occurrences per 100 million words - of all lengths - in the source text), derived from [this source](http://www.kilgarriff.co.uk/bnc-readme.html) to resource guesses.
+This solver uses a list of 5-letter words plus usage frequency (occurrences per 100 million words - of all lengths - in the source text), derived from [this source](http://www.kilgarriff.co.uk/bnc-readme.html) to resource guesses that prefer more common words.
 
 ## How it works
 
