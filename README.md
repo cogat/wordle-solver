@@ -1,6 +1,6 @@
 # Wordle Solver
 
-This solver uses a list of words plus usage frequency, derived from [this source](http://www.kilgarriff.co.uk/bnc-readme.html) to resource guesses.
+This solver uses a list of 5-letter words plus usage frequency (occurrences per 100 million words - of all lengths - in the source text), derived from [this source](http://www.kilgarriff.co.uk/bnc-readme.html) to resource guesses.
 
 ## How it works
 
@@ -28,3 +28,9 @@ It will suggest the best word (initially, OATER) and ask for the result. Type 5 
 * 🟩 = `Y`
 
 If the suggested word isn't in the Wordle word list, type `n` and it will choose the next-best word. Once you type `YYYYY` the guesses will stop.
+
+## Potential Improvements
+
+* The word list could be reduced to Wordle's valid word list, which is included in the page source, to save on time guessing invalid words.
+* We could probably exclude words that only occur once or twice in 100 million words, since they're unlikely to be chosen as answers. BUT they might be good for discriminating.
+* The solver always suggests words that match the information given (ie "hard mode"). Words that don't 100% match may be better for narrowing down large spaces, but this seems expensive to calculate.
