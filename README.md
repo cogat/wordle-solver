@@ -94,4 +94,3 @@ Jolly good - that took 5 guesses
 answers (ZUPAN anyone?). BUT they might be good for discriminating.
 - The solver always suggests words that match the information given (ie "hard mode"). Words that don't 100% match may 
 be better for narrowing down large solution spaces, but exactly what the best discriminator is seems expensive to calculate.
-````
