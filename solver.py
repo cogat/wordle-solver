@@ -1,9 +1,12 @@
-from collections import Counter, defaultdict
+#!/usr/local/bin/python3
+
+from collections import Counter, deque
+import enum
 import re
+import argparse
 
 MOCK_ANSWER = "TROLL".upper()
 
-print("Loading word freqs")
 words = Counter()
 f = open("five_letter_words.txt", "r")
 for line in f:
@@ -17,16 +20,27 @@ def mock_wordle(*, guess, answer):
     """
     A Wordle simulator for testing with
     """
-    assert len(guess) == len(answer)
+    assert len(guess) == len(answer), "The guess is a different length from the answer"
+    guess = guess.upper()
+    answer = answer.upper()
+    letter_budget = Counter(answer)
+
+    # need to take a couple of passes to sort out what to do about repeated letters in the guess
+    # that may or may not match the number of repeated letters in the answer.
+
+    for g, a in zip(guess, answer):
+        if g == a:
+            letter_budget[g] -= 1
+
     result = ""
-    for g, a in zip(guess.upper(), answer.upper()):
+    for i, (g, a) in enumerate(zip(guess, answer)):
         if g == a:
             result += "Y"
-        elif g in answer.upper():
+        elif g in answer and letter_budget[g] > 0:
             result += "y"
+            letter_budget[g] -= 1
         else:
             result += "."
-    assert len(result) == len(answer)
     return result
 
 
@@ -104,26 +118,36 @@ class WordleSolver:
         """
         Update what is known about letters from the guess.
         """
-        if result in ("n", "N"):
+        if result in ("n", "N"):  # should never happen, now we are using Wordle's list
             del self.candidate_words[guess]
             return
 
         self.num_guesses += 1
-        for i, (g, r) in enumerate(zip(guess, result)):
-            if r == ".":  # the letter is not here
-                self.filter_components = [fc - {g} for fc in self.filter_components]
-            elif r == "y":  # the letter must be somewhere, but not here
+
+        # take a couple of passes to make sure we aren't prematurely discounting repeated letters
+        for (g, r) in zip(guess, result):
+            if r in "yY":
                 self.must_have_letters.add(g)
+
+        for i, (g, r) in enumerate(zip(guess, result)):
+            if r == ".":  # the letter is not in the word
+                if g in self.must_have_letters:
+                    # actually the letter is marked yellow or green elsewhere in the word,
+                    # but isn't repeated here
+                    self.filter_components[i] -= {g}
+                else:  # the letter is nowhere in the word.
+                    self.filter_components = [fc - {g} for fc in self.filter_components]
+            elif r == "y":  # the letter must be somewhere, but not here
                 self.filter_components[i] -= {g}
             elif r == "Y":  # the letter is here
-                self.must_have_letters.add(g)
                 self.filter_components[i] = {g}
 
         self.filter_words()
 
 
-def guess_loop(mock_answer=MOCK_ANSWER):
+def guess_loop(mock_answer=MOCK_ANSWER, force_guesses=[]):
     solver = WordleSolver(words=words.copy())
+    force_guesses = deque(force_guesses)
     if not mock_answer:
         print(
             """
@@ -137,11 +161,14 @@ def guess_loop(mock_answer=MOCK_ANSWER):
         """
         )
     while True:
-        guess = solver.get_best_word()
+        if len(force_guesses):
+            guess = force_guesses.popleft()
+        else:
+            guess = solver.get_best_word()
         print(f"Suggest '{guess.upper()}'")
         if mock_answer:
             result = mock_wordle(guess=guess, answer=mock_answer)
-            print(f"outcome: {result}")
+            print(f"Outcome? {result}")
         else:
             result = input("Outcome? ")
 
@@ -153,21 +180,21 @@ def guess_loop(mock_answer=MOCK_ANSWER):
             solver.apply_guess(guess=guess, result=result)
 
 
-def find_hardest_word():
-    hardest_num_guesses = 0
-    results = []
-    for word in list(reversed(words)):
-        print(f"Trying with {word.upper()}")
-        num_guesses = guess_loop(mock_answer=word)
-        hardest_num_guesses = max(num_guesses, hardest_num_guesses)
-        if num_guesses == 6:
-            results.append((word, num_guesses))
-            if len(results) == 10:
-                return results
-    return results
-
+parser = argparse.ArgumentParser(description="Solve a Wordle puzzle.")
+parser.add_argument(
+    "--test",
+    dest="mock_answer",
+    default="",
+    help="show the guess path for a particular word",
+)
+parser.add_argument(
+    "--guesses",
+    nargs="+",
+    dest="force_guesses",
+    default=[],
+    help="force the first guesses (separate arguments with spaces)",
+)
 
 if __name__ == "__main__":
-    # guess_loop(mock_answer="zupan")
-    guess_loop(mock_answer=None)
-    # print(find_hardest_word())
+    args = parser.parse_args()
+    guess_loop(mock_answer=args.mock_answer, force_guesses=args.force_guesses)
