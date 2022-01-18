@@ -96,9 +96,6 @@ class WordleSolver:
             }
         )
         if len(new_words) == 0:
-            import pdb
-
-            pdb.set_trace()
             raise Exception("No candidate words left, sorry", pattern)
         self.candidate_words = new_words
         print(f"Filtered down to {len(self.candidate_words)} words, {pattern[1:-1]}")
