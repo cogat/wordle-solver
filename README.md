@@ -17,9 +17,8 @@ Basically:
 4. Use the most valuable word as the next guess.
 5. Repeat until done.
 
-There are initially about 30,500 candidate words (not all of these are in the Wordle list but they
-can be skipped if so). After the first guess, the candidate list is whittled to maximum of 2000
-words.
+There are initially about 7900 candidate words. After the first guess, the candidate list is whittled 
+to worst case about 600 words and (usually) exponentially down thereafter.
 
 ## Usage
 
