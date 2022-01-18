@@ -23,10 +23,10 @@ words.
 
 ## Usage
 
-Run:
+The solver is written in Python 3, and has no external dependencies. Run:
 
 ```{bash}
-python3 solver.py
+./solver.py
 ```
 
 It will suggest the best word (initially, OATER) and ask for the result. Type 5 characters to
@@ -36,9 +36,14 @@ indicate the result, such as `.y..Y` then press `ENTER`:
 - 🟨 = `y`
 - 🟩 = `Y`
 
-If the suggested word isn't in the Wordle word list, type `n` and it will choose the next-best
-word. Once you type `YYYYY` the guesses will stop.
+(If the suggested word isn't in the Wordle word list, type `n` and it will choose the next-best
+word, but this is unlikely as the original word list is matched to the Wordle word list).
 
+Once you type `YYYYY` the guesses will stop.
+
+### Testing with a particular word
+
+You can see what guesses the solver would use for a particular word, by using the `--test` parameter:
 ```
 ❯ ./solver.py --test=favor
 Suggest 'OATER'
@@ -58,21 +63,14 @@ Outcome? YYYYY
 Jolly good - that took 5 guesses
 ```
 
-If you have started with your own guesses, you can provide these with `--guesses`. You still need
-to provide the outcomes of the guesses, but the solver will pick up where you left off and find the
-next best word.
+### Finishing what you have started
+
+If you have started with your own guesses, you can provide these with `--guesses`, space-separated. You 
+still need to provide the outcomes of the guesses, but the solver will pick up where you left off and 
+find the next best word.
 
 ````
 ❯ ./solver.py --guesses laser bring crowd
-
-        Outcome is:
-            n (whole answer) = not in word list
-        or 5 letters:
-            . = not in letters
-            y = in letters but not in place
-            Y = in letters and in place
-        e.g. YYYYY = perfect"
-
 Suggest 'LASER'
 Outcome? ....y
 Filtered down to 251 words, [bcdfghijkmnopqrtuvwxyz][bcdfghijkmnopqrtuvwxyz][bcdfghijkmnopqrtuvwxyz][bcdfghijkmnopqrtuvwxyz][bcdfghijkmnopqtuvwxyz]
@@ -87,11 +85,14 @@ Outcome? YYY..
 Filtered down to 3 words, [p][r][o][hjkmpqrtuvxyz][hjkmopqtuvxyz]
 Suggest 'PROXY'
 Outcome? YYYYY
-Jolly good - that took 5 guesses```
+Jolly good - that took 5 guesses
+```
 
 ## Potential Improvements
 
 - Where several words have the same or similar usefulness score, the guesser should return the most frequently-used one.
-- We could probably exclude words that only occur once or twice in 100 million words, since they're unlikely to be chosen as answers. BUT they might be good for discriminating.
-- The solver always suggests words that match the information given (ie "hard mode"). Words that don't 100% match may be better for narrowing down large solution spaces, but exactly what the best discriminator is seems expensive to calculate.
+- We could probably exclude words that only occur once or twice in 100 million words, since they're unlikely to be chosen as 
+answers (ZUPAN anyone?). BUT they might be good for discriminating.
+- The solver always suggests words that match the information given (ie "hard mode"). Words that don't 100% match may 
+be better for narrowing down large solution spaces, but exactly what the best discriminator is seems expensive to calculate.
 ````
